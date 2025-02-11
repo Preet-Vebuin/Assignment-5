@@ -1,0 +1,157 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Task Management API",
+      "description": "API documentation for managing tasks",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local development server"
+      }
+    ],
+    "paths": {
+      "/todo": {
+        "post": {
+          "summary": "Create a new task",
+          "description": "Adds a new task to the database",
+          "operationId": "createTask",
+          "tags": ["Tasks"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string", "example": "New Task" },
+                    "description": { "type": "string", "example": "This is a sample task" },
+                    "dueDate": { "type": "string", "format": "date-time", "example": "2024-02-20T10:30:00Z" }
+                  },
+                  "required": ["title"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "Task created successfully" },
+            "400": { "description": "Bad request" }
+          }
+        },
+        "get": {
+          "summary": "Get all tasks",
+          "description": "Retrieves a list of all tasks",
+          "operationId": "getAllTasks",
+          "tags": ["Tasks"],
+          "responses": {
+            "200": {
+              "description": "List of tasks",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
+                }
+              }
+            },
+            "500": { "description": "Internal server error" }
+          }
+        }
+      },
+      "/todo/{id}": {
+        "get": {
+          "summary": "Find task by ID",
+          "description": "Retrieves a task by its unique ID",
+          "operationId": "findTaskById",
+          "tags": ["Tasks"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" },
+              "description": "Task ID"
+            }
+          ],
+          "responses": {
+            "200": { "description": "Task found" },
+            "400": { "description": "Invalid ID" },
+            "404": { "description": "Task not found" }
+          }
+        },
+        "put": {
+          "summary": "Update task",
+          "description": "Updates an existing task",
+          "operationId": "updateTask",
+          "tags": ["Tasks"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" },
+              "description": "Task ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string", "example": "Updated Task Title" },
+                    "description": { "type": "string", "example": "Updated description" },
+                    "dueDate": { "type": "string", "format": "date-time", "example": "2024-02-22T12:00:00Z" }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Task updated successfully" },
+            "400": { "description": "Invalid data" },
+            "404": { "description": "Task not found" }
+          }
+        },
+        "delete": {
+          "summary": "Delete task",
+          "description": "Deletes a task by its ID",
+          "operationId": "deleteTask",
+          "tags": ["Tasks"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" },
+              "description": "Task ID"
+            }
+          ],
+          "responses": {
+            "200": { "description": "Task deleted successfully" },
+            "400": { "description": "Invalid ID" },
+            "404": { "description": "Task not found" }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Task": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "example": 1 },
+            "title": { "type": "string", "example": "New Task" },
+            "description": { "type": "string", "example": "This is a sample task" },
+            "dueDate": { "type": "string", "format": "date-time", "example": "2024-02-20T10:30:00Z" }
+          }
+        }
+      }
+    }
+  }
+  
