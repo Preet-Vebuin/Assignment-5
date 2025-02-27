@@ -6,7 +6,6 @@ export const createTaskController = (TaskRepo: TaskRepositoryPort) => async (req
   try {
     const { title, description, dueDate } = req.body;
 
-    // Pass repository instance and request data
     const task = await createTaskUseCase(TaskRepo, { title, description, dueDate });
 
     res.status(201).json(task);
