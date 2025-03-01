@@ -7,6 +7,7 @@ export const mockTaskRepository: jest.Mocked<TaskRepositoryPort> = {
   getAll: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
+  findByTitle: jest.fn(),
 };
 
 // Helper function to reset mocks before each test

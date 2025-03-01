@@ -4,7 +4,7 @@ import { TaskRepositoryPort } from "../../application/ports/repository/TaskRepos
 
 export const deleteTaskController = (TaskRepo: TaskRepositoryPort) => async (req: Request, res: Response) => {
   try {
-    const taskId = parseInt(req.params.id); // Get task ID from request params
+    const taskId = parseInt(req.params.id); 
 
     const isDeleted = await deleteTaskUseCase(TaskRepo, taskId);
 

@@ -4,37 +4,65 @@ import { TaskRepositoryPort } from "../../application/ports/repository/TaskRepos
 import { TaskType } from "../../domain/models/Task";
 
 export const TaskRepository: TaskRepositoryPort = {
+  // create: async function (task: Omit<TaskType, "id">): Promise<TaskType> {
+  //   console.log("Creating Task:", task); // Log input data
+  
+  //   const result = await AppDataSource.getRepository(Task)
+  //     .createQueryBuilder()
+  //     .insert()
+  //     .into(Task)
+  //     .values({
+  //       title: task.title,
+  //       description: task.description,
+  //       dueDate: task.dueDate, // Convert Date to MySQL DATETIME format
+  //     })
+  //     .execute();
+  
+  //   console.log("Insert Result:", result); // Log insert result
+  
+  //   const insertedId = result.identifiers[0]?.id;
+  //   console.log("Inserted Task ID:", insertedId); // Log inserted ID
+  
+  //   if (!insertedId) {
+  //     throw new Error("Task creation failed: No ID returned");
+  //   }
+  
+  //   // Fetch the created task from the database
+  //   const createdTask = await AppDataSource.getRepository(Task)
+  //     .createQueryBuilder("task")
+  //     .where("task.id = :id", { id: insertedId })
+  //     .getOne();
+  
+  //   console.log("Fetched Task:", createdTask); // Log fetched task
+  
+  //   if (!createdTask) {
+  //     throw new Error("Task creation failed: Unable to retrieve inserted task");
+  //   }
+  
+  //   return createdTask;
+  // },
+  
   create: async function (task: Omit<TaskType, "id">): Promise<TaskType> {
-    const result = await AppDataSource.getRepository(Task)
-      .createQueryBuilder()
-      .insert()
-      .into(Task)
-      .values({
-        title: task.title,
-        description: task.description,
-        dueDate: task.dueDate , // Convert Date to MySQL DATETIME format
-      })
-      .execute();
-
-    //  Get the generated ID
-    const insertedId = result.identifiers[0]?.id;
-    if (!insertedId) {
+    const taskRepository = AppDataSource.getRepository(Task);
+  
+    // Insert the task and return the generated row
+    const result = await taskRepository.save(task);
+    console.log("Inserted Task:", result); // ✅ Check if task was inserted properly
+  
+    if (!result.id) {
       throw new Error("Task creation failed: No ID returned");
     }
-
-    //  Fetch the created task from the database
-    const createdTask = await AppDataSource.getRepository(Task)
-      .createQueryBuilder("task")
-      .where("task.id = :id", { id: insertedId })
-      .getOne();
-
+  
+    // Fetch the created task from DB (optional, since `save()` already returns it)
+    const createdTask = await taskRepository.findOneBy({ id: result.id });
+  
     if (!createdTask) {
       throw new Error("Task creation failed: Unable to retrieve inserted task");
     }
-
+  
     return createdTask;
   },
- 
+  
   getAll: async function () : Promise<TaskType[]> {
       return await AppDataSource.getRepository(Task)
         .createQueryBuilder("task")
@@ -105,6 +133,19 @@ export const TaskRepository: TaskRepositoryPort = {
     }
   
     return task;
+  },
+  findByTitle: async function (title: string): Promise<TaskType | null> {
+    const taskRepository = AppDataSource.getRepository(Task);
+  
+    // Fetch the task by title
+    const task = await taskRepository
+      .createQueryBuilder("task")
+      .where("task.title = :title", { title })
+      .getOne();
+  
+    return task || null; // ✅ Return null instead of throwing an error
   }
+  
+  
   
 };

@@ -9,7 +9,6 @@ describe("findTaskByIdUseCase", () => {
 
   test("should return a task when ID is valid", async () => {
     const mockTask: TaskType = { id: 0, title: "Test Task", description: "Mock task", dueDate: new Date() };
-// if you put null instesd mockTask then it will gives the error
     mockTaskRepository.findById.mockResolvedValue(mockTask);
 
     const result = await findTaskByIdUseCase(mockTaskRepository, 1);

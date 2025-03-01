@@ -6,5 +6,7 @@ export type TaskRepositoryPort = {
     update(id : number ,data : Partial<TaskType>) : Promise<TaskType>
     delete(id : number) : Promise<boolean>
     findById(id : number) : Promise<TaskType>
+    findByTitle(title: string): Promise<TaskType | null>; // Add this method
+
 
 }
